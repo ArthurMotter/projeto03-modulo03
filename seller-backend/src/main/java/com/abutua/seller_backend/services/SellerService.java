@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.abutua.seller_backend.dtos.SellerDTO;
@@ -52,6 +53,18 @@ public class SellerService {
             return repository.save(entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Vendedor não encontrado");
+        }
+    }
+
+    // Delete
+    public void delete(long id) {
+        findById(id); 
+
+        try {
+            repository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Violação de integridade de dados");
         }
     }
 }
