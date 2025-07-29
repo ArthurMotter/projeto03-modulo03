@@ -1,1 +1,51 @@
-<p>seller-form works!</p>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Novo Vendedor</h5>
+    
+    <form [formGroup]="sellerForm" (ngSubmit)="onSubmit()">
+
+      <!-- Nome -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="name" formControlName="name">
+        <div *ngIf="formControls['name'].invalid && formControls['name'].touched" class="text-danger mt-1">
+          <small *ngIf="formControls['name'].errors?.['required']">O nome é obrigatório.</small>
+          <small *ngIf="formControls['name'].errors?.['minlength']">O nome deve ter no mínimo 5 caracteres.</small>
+        </div>
+      </div>
+
+      <!-- Salário -->
+      <div class="mb-3">
+        <label for="salary" class="form-label">Salário</label>
+        <input type="number" class="form-control" id="salary" formControlName="salary">
+        <div *ngIf="formControls['salary'].invalid && formControls['salary'].touched" class="text-danger mt-1">
+          <small>O salário é obrigatório e deve ser maior que zero.</small>
+        </div>
+      </div>
+      
+      <!-- Bônus -->
+      <div class="mb-3">
+        <label for="bonus" class="form-label">Bônus (%)</label>
+        <input type="number" class="form-control" id="bonus" formControlName="bonus">
+         <div *ngIf="formControls['bonus'].invalid && formControls['bonus'].touched" class="text-danger mt-1">
+          <small>O bônus é obrigatório e deve ser entre 0 e 100.</small>
+        </div>
+      </div>
+
+      <!-- Gênero -->
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gênero</label>
+        <select class="form-select" id="gender" formControlName="gender">
+          <option [ngValue]="null" disabled>Selecione...</option>
+          <option [ngValue]="1">Masculino</option>
+          <option [ngValue]="2">Feminino</option>
+        </select>
+        <div *ngIf="formControls['gender'].invalid && formControls['gender'].touched" class="text-danger mt-1">
+          <small>Selecione um gênero.</small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="sellerForm.invalid">Salvar</button>
+    </form>
+  </div>
+</div>
