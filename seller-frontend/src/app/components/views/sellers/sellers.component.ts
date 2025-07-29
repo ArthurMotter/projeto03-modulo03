@@ -6,20 +6,21 @@ import { SellerFormComponent } from '../seller-form/seller-form.component';
 
 @Component({
   selector: 'app-sellers',
-  imports:[CommonModule, CurrencyPipe, SellerFormComponent],
+  imports: [CommonModule, CurrencyPipe, SellerFormComponent],
   templateUrl: './sellers.component.html',
   styleUrls: ['./sellers.component.css']
 })
 export class SellersComponent implements OnInit {
 
   sellers: Seller[] = [];
-  showForm = false; 
+  sellerToEdit: Seller | null = null;
+  showForm = false;
 
   constructor(private sellerService: SellerService) { }
 
   // Methods
   ngOnInit(): void {
-    this.loadSellers(); 
+    this.loadSellers();
   }
 
   loadSellers(): void {
@@ -30,7 +31,27 @@ export class SellersComponent implements OnInit {
 
   // Handlers
   onSellerCreated(): void {
-    this.showForm = false; 
+    this.showForm = false;
+    this.sellerToEdit = null;
     this.loadSellers();
+  }
+
+  handleEdit(seller: Seller): void {
+    this.sellerToEdit = seller;
+    this.showForm = true;
+  }
+
+  handleNewSeller(): void {
+    this.sellerToEdit = null;
+    this.showForm = true;
+  }
+
+  handleDelete(id: number): void {
+    if (confirm('Tem certeza que deseja remover este vendedor?')) {
+      this.sellerService.delete(id).subscribe(() => {
+        alert('Vendedor removido com sucesso!');
+        this.loadSellers();
+      });
+    }
   }
 }
