@@ -1,40 +1,55 @@
 <div class="container">
     <h2 class="my-4">Lista de Vendedores</h2>
 
+    <!-- Loading state-->
+    <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
     <div *ngIf="showForm" class="mb-4">
         <app-seller-form (sellerCreated)="onSellerCreated()" [sellerToEdit]="sellerToEdit">
         </app-seller-form>
     </div>
 
-    <!-- Mostra a tabela se showForm for false -->
+    <!-- Sellers Table -->
     <ng-container *ngIf="!showForm">
         <div class="d-flex justify-content-end mb-3">
             <button class="btn btn-success" (click)="handleNewSeller()">Novo Vendedor</button>
         </div>
+        <div *ngIf="sellers.length > 0; else noSellers">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th class="d-none d-md-table-cell">Salário</th>
+                        <th class="d-none d-md-table-cell">Bônus (%)</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let seller of sellers">
+                        <td>{{ seller.id }}</td>
+                        <td>{{ seller.name }}</td>
+                        <td class="d-none d-md-table-cell">{{ seller.salary | currency:'BRL' }}</td>
+                        <td class="d-none d-md-table-cell">{{ seller.bonus }}%</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm me-2" (click)="handleEdit(seller)">Editar</button>
+                            <button class="btn btn-danger btn-sm" (click)="handleDelete(seller.id)">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <table class="table table-striped table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Salário</th>
-                    <th>Bônus (%)</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let seller of sellers">
-                    <td>{{ seller.id }}</td>
-                    <td>{{ seller.name }}</td>
-                    <td>{{ seller.salary | currency:'BRL' }}</td>
-                    <td>{{ seller.bonus }}%</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm me-2" (click)="handleEdit(seller)">Editar</button>
-                        <button class="btn btn-danger btn-sm" (click)="handleDelete(seller.id)">Remover</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Template -->
+        <ng-template #noSellers>
+            <div class="alert alert-info text-center">
+                Nenhum vendedor encontrado. Clique em "Novo Vendedor" para adicionar o primeiro!
+            </div>
+        </ng-template>
     </ng-container>
 
 </div>

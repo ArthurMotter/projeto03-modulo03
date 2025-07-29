@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { SellerService } from '../../../services/seller.service';
 import { Seller } from '../../../models/seller.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-seller-form',
@@ -26,7 +27,8 @@ export class SellerFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private sellerService: SellerService
+    private sellerService: SellerService,
+    private toastr: ToastrService
   ) { }
 
   // Methods
@@ -48,20 +50,17 @@ export class SellerFormComponent implements OnInit {
 
   // Handlers
   onSubmit(): void {
-    if (this.sellerForm.invalid) {
-      return;
-    }
+    if (this.sellerForm.invalid) { return; }
 
-    // Handles creation or edition
     if (this.sellerToEdit) {
       this.sellerService.update(this.sellerToEdit.id, this.sellerForm.value).subscribe(() => {
-        alert('Vendedor atualizado com sucesso!');
+        this.toastr.success('Vendedor atualizado com sucesso!'); 
         this.sellerCreated.emit();
         this.resetForm();
       });
     } else {
       this.sellerService.create(this.sellerForm.value).subscribe(() => {
-        alert('Vendedor cadastrado com sucesso!');
+        this.toastr.success('Vendedor cadastrado com sucesso!');
         this.sellerCreated.emit();
         this.resetForm();
       });

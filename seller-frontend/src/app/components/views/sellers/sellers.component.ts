@@ -3,6 +3,8 @@ import { Seller } from '../../../models/seller.model';
 import { SellerService } from '../../../services/seller.service';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { SellerFormComponent } from '../seller-form/seller-form.component';
+import { finalize } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sellers',
@@ -14,9 +16,14 @@ export class SellersComponent implements OnInit {
 
   sellers: Seller[] = [];
   sellerToEdit: Seller | null = null;
-  showForm = false;
 
-  constructor(private sellerService: SellerService) { }
+  showForm = false;
+  isLoading = false;
+
+  constructor(
+    private sellerService: SellerService,
+    private toastr: ToastrService
+  ) { }
 
   // Methods
   ngOnInit(): void {
@@ -24,9 +31,14 @@ export class SellersComponent implements OnInit {
   }
 
   loadSellers(): void {
-    this.sellerService.findAll().subscribe(data => {
-      this.sellers = data;
-    });
+    this.isLoading = true;
+    this.sellerService.findAll()
+      .pipe(
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe(data => {
+        this.sellers = data;
+      });
   }
 
   // Handlers
@@ -49,7 +61,7 @@ export class SellersComponent implements OnInit {
   handleDelete(id: number): void {
     if (confirm('Tem certeza que deseja remover este vendedor?')) {
       this.sellerService.delete(id).subscribe(() => {
-        alert('Vendedor removido com sucesso!');
+        this.toastr.info('Vendedor removido com sucesso!');
         this.loadSellers();
       });
     }
